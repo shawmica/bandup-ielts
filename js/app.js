@@ -904,7 +904,7 @@
           ${rows.map(r => `<tr>${r.map(c => `<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</table></div>
           <p class="small muted">Calibration so far: the rules were tuned on nine reference-rated samples. Agreement within half a band rose from 44% to 100% on those samples. This is in-sample agreement only; a real study needs new scripts rated by trained teachers.</p></section>
         <section class="card"><h2>Privacy</h2><p class="small">Everything stays in this browser's storage. There are no accounts, no analytics and no server. Recordings exist only in memory and are deleted when you leave the Speaking screen. A production version would need consent and data-retention rules under Sri Lanka's Personal Data Protection Act, No. 9 of 2022.</p></section>
-        <section class="card"><h2>Sources</h2><p class="small">Band conversion anchor points and the overall rounding rule: ielts.org, "IELTS scoring in detail" (accessed 15 October 2026). All practice content is original to this prototype.</p></section>`;
+        <section class="card"><h2>Sources</h2><p class="small">Band conversion anchor points and the overall rounding rule: ielts.org, "IELTS scoring in detail" (accessed 21 October 2026). All practice content is original to this prototype.</p></section>`;
     }
   };
 

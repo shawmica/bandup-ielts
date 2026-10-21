@@ -15,7 +15,7 @@
   'use strict';
 
   // ----------------------------------------------------------------- band tables
-  // Official anchor points (ielts.org "IELTS scoring in detail", accessed 15 Oct 2026):
+  // Official anchor points (ielts.org "IELTS scoring in detail", accessed 21 Oct 2026):
   // the average raw score out of 40 needed for each whole band. Rows marked
   // official:false are the prototype's own linear interpolation / extrapolation.
   const BAND_ANCHORS = {

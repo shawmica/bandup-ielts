@@ -57,7 +57,7 @@ tests/calibrate.js    unit checks + calibration table (node tests/calibrate.js -
 
 ## How the simulated AI works (spec 4.3)
 
-**Reading and Listening are real auto-scoring, not AI.** Answers are checked against a fixed key. Spelling near-misses and word-limit breaks count as wrong and are labelled. The raw score out of 10 is scaled to 40 and converted with the official anchor points from ielts.org, *IELTS scoring in detail* (accessed 15 October 2026):
+**Reading and Listening are real auto-scoring, not AI.** Answers are checked against a fixed key. Spelling near-misses and word-limit breaks count as wrong and are labelled. The raw score out of 10 is scaled to 40 and converted with the official anchor points from ielts.org, *IELTS scoring in detail* (accessed 21 October 2026):
 
 | Band | Listening | Academic Reading | General Training Reading |
 |------|-----------|------------------|--------------------------|
