@@ -1,6 +1,6 @@
 // Offline cache: the whole app is ~180 KB, so it is cached on first visit and then
 // works without mobile data (useful during connectivity drops and power cuts).
-const CACHE = 'bandup-v3';
+const CACHE = 'bandup-v4';
 const FILES = ['./', 'index.html', 'css/styles.css', 'js/content.js', 'js/engine.js', 'js/app.js', 'manifest.webmanifest', 'icon.svg'];
 // cache: 'reload' skips the browser's HTTP cache (GitHub Pages sends max-age=600),
 // so a new version never stores the previous version's files.

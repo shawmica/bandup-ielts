@@ -88,6 +88,8 @@ main {
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
   display: flex; flex-direction: column; gap: 16px; outline: none;
 }
+/* main is focused on every screen change; Safari otherwise draws the focus ring round the whole page */
+main:focus-visible { outline: none; }
 .tabbar {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: grid; grid-template-columns: repeat(4, 1fr);
   background: var(--surface); border-top: 1px solid var(--line);
@@ -138,6 +140,12 @@ label.field { display: flex; flex-direction: column; gap: 6px; font-weight: 600;
 .field .hint { font-weight: 400; font-size: 0.85rem; color: var(--muted); }
 input[type="text"], input[type="date"], input[type="number"], select, textarea {
   width: 100%; min-height: var(--tap); padding: 10px 12px; border: 1.5px solid var(--line); border-radius: 8px; background: var(--surface); }
+input[type="date"] { display: block; min-width: 0; }
+/* iOS Safari sizes date inputs to their content and centres the value, so they ran past the screen edge */
+@supports (-webkit-touch-callout: none) {
+  input[type="date"] { -webkit-appearance: none; appearance: none; }
+  input[type="date"]::-webkit-date-and-time-value { text-align: left; }
+}
 textarea { min-height: 220px; line-height: 1.55; resize: vertical; }
 input:focus, select:focus, textarea:focus { border-color: var(--lagoon); outline: none; box-shadow: 0 0 0 3px var(--lagoon-soft); }
 .seg { display: flex; flex-wrap: wrap; gap: 6px; }
