@@ -35,9 +35,14 @@
 
   function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 2600); }
 
+  // Text size is also one tap away in the top bar: in usability testing 3 of 5 needed a hint to find it in Settings.
+  const TEXT_SIZES = [['s', 'Small'], ['m', 'Default'], ['l', 'Large'], ['xl', 'Extra large']];
+  const textLabel = () => (TEXT_SIZES.find(t => t[0] === S.settings.text) || TEXT_SIZES[1])[1];
+
   function applySettings() {
     const r = document.documentElement, st = S.settings;
     r.dataset.text = st.text;
+    $('#textBtn').setAttribute('aria-label', `Text size: ${textLabel()}. Tap to change`);
     if (st.contrast) r.dataset.contrast = 'high'; else delete r.dataset.contrast;
     if (st.motion) r.dataset.motion = 'reduce'; else delete r.dataset.motion;
     if (st.theme === 'system') delete r.dataset.theme; else r.dataset.theme = st.theme;
@@ -344,6 +349,11 @@
         </div>
         <div class="streak" data-note="Behaviorist: streak (positive reinforcement)"><span class="flame num">${S.streak.count}</span>
           <div><strong>${S.streak.count === 1 ? '1-day streak' : S.streak.count + '-day streak'}</strong><p class="small muted">${doneN}/${items.length} of today's plan done. Missing a day resets the count, not your progress.</p></div></div>
+        <section class="card" aria-labelledby="pth" data-note="Diagnostic: personalises the plan">
+          <div class="section-title"><h2 id="pth">Placement test</h2><span class="chip num">10 min</span></div>
+          <p class="small muted">${S.diagDone ? `Taken on ${esc(S.diagDone)}. Retake it to update your plan.` : 'Not taken yet. It estimates your level in each skill so today’s plan fits you.'}</p>
+          <a class="btn ${S.diagDone ? 'secondary ' : ''}block" href="#diagnostic">${S.diagDone ? 'Retake the placement test' : 'Take the placement test'}</a>
+        </section>
         <section class="card" aria-labelledby="planh" data-note="Personalised plan from diagnostic gaps">
           <div class="section-title"><h2 id="planh">Today's plan</h2><span class="muted small num">${p.minutes} min</span></div>
           <div>${items.map(i => `<a class="plan-item ${S.done.items.includes(i.key) ? 'done' : ''}" href="${i.href}"><span class="check" aria-hidden="true">${S.done.items.includes(i.key) ? '&#10003;' : ''}</span>
@@ -544,7 +554,12 @@
         objectiveResult(main, res, L.questions, {
           skill: 'listening', table: 'listening', names: { FORM: 'Form completion', MCQ: 'Multiple choice' }, redo: () => go('listening'),
           extra: `<details open><summary>Your answers</summary><div class="inner tablewrap"><table class="metrics"><tr><th>Q</th><th>You wrote</th><th>Result</th></tr>${itemRows}</table></div></details>
-            <details><summary>Transcript (unlocked after answering)</summary><div class="inner transcript" data-note="Transcript after answering: no shortcut during the task">${tr}</div></details>`
+            <details id="transcript" open><summary>Transcript (unlocked after answering)</summary><div class="inner transcript" data-note="Transcript after answering: no shortcut during the task">${tr}</div></details>`,
+          // 2 of 5 testers could not find the transcript at the bottom of the results, so link to it from the top.
+          after: m => {
+            m.querySelector('.stack-s').insertAdjacentHTML('beforeend', '<button class="btn secondary small" id="toTranscript" type="button">Show transcript</button>');
+            $('#toTranscript', m).onclick = () => { const d = $('#transcript', m); d.open = true; d.scrollIntoView({ block: 'start' }); };
+          }
         });
       };
       draw();
@@ -631,6 +646,8 @@
         const model = (C.WRITING_SAMPLES[T.key] || []).find(s => s.level === 'strong');
         main.innerHTML = `${simBanner()}
           <div class="stack-s"><p class="eyebrow">Task ${T.task} feedback</p><div class="row-between"><h1>Estimated band <span class="num">${fmt(out.band)}</span></h1><span class="chip ${confChip}">${out.confidence} confidence</span></div></div>
+          <div class="crit-sum" role="list" aria-label="Band for each criterion" data-note="All four criterion bands at a glance">${out.criteria.map(c => `<div class="crit-sum-item" role="listitem"><span class="small">${esc(c.label)}</span><span class="bandmed">${c.band}</span></div>`).join('')}</div>
+          <p class="small muted">Each criterion is scored from 0 to 9. Your task band is their average, rounded to the nearest half band. What each band means, and what to fix, is under each criterion below.</p>
           ${low ? `<div class="state-box low" role="alert" data-note="Low-confidence state: system flags weak evidence"><strong>Low confidence</strong>${out.reasons.map(r => `<p class="small">${esc(r)}</p>`).join('')}<p class="small">Use the feedback below as hints. This result is <strong>not added</strong> to your progress.</p></div>` : ''}
           <div class="card">${ruler(out.band, S.profile.target, { label: 'Writing task' })}
             <p class="small muted">Task band = average of the four criteria below, rounded to the nearest half band.
@@ -909,6 +926,12 @@
   };
 
   // ------------------------------------------------------------------ boot
+  $('#textBtn').onclick = () => {
+    const i = TEXT_SIZES.findIndex(t => t[0] === S.settings.text);
+    S.settings.text = TEXT_SIZES[(i + 1) % TEXT_SIZES.length][0];
+    save(); applySettings(); toast('Text size: ' + textLabel());
+    if ((location.hash || '').replace('#', '') === 'settings') render();
+  };
   applySettings();
   render();
   // Offline support where the host allows service workers (e.g. GitHub Pages over https).
