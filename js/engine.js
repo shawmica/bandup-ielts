@@ -470,16 +470,19 @@
   function studyPlan(profile, bands) {
     const skills = ['listening', 'reading', 'writing', 'speaking'];
     const target = Number(profile.target) || 6.5;
-    const gaps = skills.map(s => ({ skill: s, current: bands[s], gap: Math.max(0.5, target - (bands[s] || target - 1)) }));
+    // gap is negative for a skill above target, so it ranks last; the 0.5 floor only sets its share of minutes.
+    const gaps = skills.map(s => ({ skill: s, current: bands[s], gap: target - (bands[s] || target - 1) }));
+    const weight = g => Math.max(0.5, g.gap);
     gaps.sort((a, b) => b.gap - a.gap);
     const minutes = Number(profile.minutes) || 45;
-    const totalGap = gaps.reduce((s, g) => s + g.gap, 0);
+    const totalGap = gaps.reduce((s, g) => s + weight(g), 0);
     const vocabMins = Math.max(5, Math.round(minutes * 0.12));
     const rest = minutes - vocabMins;
-    const alloc = gaps.map(g => Object.assign({}, g, { minutes: Math.max(5, Math.round((g.gap / totalGap) * rest / 5) * 5) }));
+    const alloc = gaps.map(g => Object.assign({}, g, { minutes: Math.max(5, Math.round((weight(g) / totalGap) * rest / 5) * 5) }));
     let daysLeft = null;
     if (profile.examDate) daysLeft = Math.ceil((new Date(profile.examDate) - new Date(new Date().toDateString())) / 86400000);
-    return { alloc, vocabMins, daysLeft, focus: alloc.slice(0, 2).map(a => a.skill) };
+    const below = alloc.filter(a => a.gap > 0);
+    return { alloc, vocabMins, daysLeft, focus: (below.length ? below : alloc).slice(0, 2).map(a => a.skill) };
   }
 
   const Engine = { BAND_ANCHORS, rawToBand, roundHalf, overallBand, normalise, levenshtein, checkAnswer, scoreObjective, measureText,

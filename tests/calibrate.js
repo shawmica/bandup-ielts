@@ -34,6 +34,13 @@ assert.ok(E.checkAnswer(R[7], 'the seeds', 2).correct);
 const allRight = {}; R.forEach(q => allRight[q.n] = Array.isArray(q.answer) ? q.answer[0] : q.answer);
 const sr = E.scoreObjective(R, allRight, 'reading_academic', { maxWords: 2 });
 assert.strictEqual(sr.raw, 10); assert.strictEqual(sr.band, 9);
+
+// --- study plan: a skill above target is never a focus while others are below it
+const plan = E.studyPlan({ target: 7.5, minutes: 45 }, { listening: 9, reading: 7, writing: 7, speaking: 6.5 });
+assert.deepStrictEqual(plan.focus, ['speaking', 'reading']);
+assert.deepStrictEqual(plan.alloc.slice(0, 3).map(a => a.skill), ['speaking', 'reading', 'writing']);
+assert.deepStrictEqual(E.studyPlan({ target: 7.5 }, { listening: 9, reading: 8, writing: 8, speaking: 6.5 }).focus, ['speaking']);
+assert.deepStrictEqual(E.studyPlan({ target: 6 }, { listening: 9, reading: 8, writing: 7, speaking: 6.5 }).focus, ['speaking', 'writing']);
 console.log('Unit checks passed.\n');
 
 // --- calibration
