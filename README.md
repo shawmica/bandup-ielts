@@ -1,6 +1,6 @@
 # BandUp: AI-assisted IELTS practice (prototype)
 
-ICT4201 E-Learning, Assignment 02, Group NN.
+ICT4201 E-Learning, Assignment 02.
 A mobile-first web app prototype for Sri Lankan IELTS candidates. It has diagnostic placement, a personalised daily plan, practice for all four skills, and a **clearly labelled simulated AI** that mirrors a Measure → Judge → Combine → Calibrate scoring pipeline.
 
 > Prototype: simulated AI. No live AI service is called. All feedback comes from rules and a pre-written feedback bank running in the browser. Bands are practice estimates, not official IELTS scores.
@@ -102,7 +102,6 @@ The official page gives only these anchor points. Half bands between them, and v
 - [ ] Replace the `teacherBand` reference values with ratings from a teacher if you can, and re-run the calibration.
 - [ ] Test on at least one real Android phone (Chrome). Text-to-speech voices vary by device. On phones with no English voice, the listening screen falls back to a "read the script" mode.
 - [ ] Declare AI assistance in the AI-use declaration. This prototype's code and draft content were generated with Claude (Anthropic) and must be listed with what you changed and verified.
-- [ ] Change `Group NN` in this README.
 
 ## Capturing the required screenshots
 
